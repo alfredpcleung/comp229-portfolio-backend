@@ -39,10 +39,14 @@ exports.create = async (req, res, next) => {
 // PUT update
 exports.updateById = async (req, res, next) => {
   try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return next(createError(400, 'Invalid ID format'));
+    }
     // always refresh the updated field
     req.body.updated = new Date();
     const updated = await User.findByIdAndUpdate(
-      req.params.id,
+      id,
       req.body,
       { new: true, runValidators: true }
     );
@@ -54,7 +58,11 @@ exports.updateById = async (req, res, next) => {
 // DELETE by ID
 exports.removeById = async (req, res, next) => {
   try {
-    const deleted = await User.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return next(createError(400, 'Invalid ID format'));
+    }
+    const deleted = await User.findByIdAndDelete(id);
     if (!deleted) return next(createError(404, 'User not found'));
     res.json({ message: 'User deleted' });
   } catch (err) { next(err); }

@@ -18,6 +18,9 @@ app.use(cors());
 // routes
 app.use('/', rootRouter);
 
+const authRouter = require('./routes/auth.routes');
+app.use('/api/auth', authRouter);
+
 const contactsRouter = require('./routes/contacts.routes');
 app.use('/api/contacts', contactsRouter);
 
